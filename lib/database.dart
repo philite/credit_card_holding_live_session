@@ -1,3 +1,4 @@
+import 'package:credit_card_holding2/card_type.dart';
 import 'package:credit_card_holding2/credit_card.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
@@ -76,5 +77,17 @@ class SqlDatabase {
     );
 
     return list;
+  }
+
+  Future<List<CreditCard>> getCardsByType(CardType type) {
+    // Same mechanic as getAllCards();
+    List<CreditCard> list = List<CreditCard>.empty(growable: true);
+    // "SELECT * FROM creditCardTable WHERE type = 'masterCard'"
+    return _database.query(_tableCreditCard, where: "$columnCardType = '${type.name}'")
+        .then((cards) => {
+          for (var value in cards) {
+            list.add(CreditCard.fromMap(value))
+          }
+    }).then((value) => list);
   }
 }
